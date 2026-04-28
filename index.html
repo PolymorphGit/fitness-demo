@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+<title>ลงทะเบียนสนใจ — Fitness</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red:      #D0021B;
+    --red-dark: #A50116;
+    --red-pale: rgba(208,2,27,0.08);
+    --white:    #FFFFFF;
+    --off-white:#F9F7F5;
+    --gray-100: #F2F0ED;
+    --gray-300: #D4CFC9;
+    --gray-500: #9A958E;
+    --gray-800: #2C2825;
+    --border:   #E8E3DC;
+    --radius:   8px;
+    --display:  'Bebas Neue', 'Impact', sans-serif;
+    --body:     'Noto Sans Thai', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--white);
+    color: var(--gray-800);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+  }
+
+  /* ── LEFT PANEL ── */
+  .panel-left {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem 2.5rem;
+    background: var(--red);
+    overflow: hidden;
+  }
+
+  /* diagonal accent stripe */
+  .panel-left::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border: 40px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .panel-left::before {
+    content: '';
+    position: absolute;
+    top: 40px; right: -80px;
+    width: 200px; height: 200px;
+    border: 28px solid rgba(255,255,255,0.06);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .brand-mark {
+    width: 40px; height: 4px;
+    background: var(--white);
+    border-radius: 2px;
+  }
+
+  .headline {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .headline h1 {
+    font-family: var(--display);
+    font-size: clamp(3.5rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .headline h1 span {
+    display: block;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .headline p {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.75);
+    max-width: 300px;
+  }
+
+  .benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .benefit {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .benefit-icon {
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .branch-count {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── RIGHT PANEL (FORM) ── */
+  .panel-right {
+    padding: 3rem 3.5rem 4rem;
+    overflow-y: auto;
+    background: var(--off-white);
+  }
+
+  .form-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .form-header h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .form-header p {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 1.75rem 0 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* FIELD GROUPS */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .field-row.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  label .req { color: var(--red); font-size: 0.875rem; line-height: 1; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--gray-800);
+    font-family: var(--body);
+    font-size: 0.9375rem;
+    padding: 0.7rem 0.875rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(208,2,27,0.1);
+  }
+
+  input::placeholder { color: var(--gray-300); }
+
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A958E' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    padding-right: 2.25rem;
+    background-color: var(--white);
+    color: var(--gray-800);
+  }
+
+  select option { color: var(--gray-800); }
+
+  /* PDPA BLOCK */
+  .pdpa-block {
+    margin-top: 0.5rem;
+    padding: 1.25rem;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .checkbox-row:last-child { margin-bottom: 0; }
+
+  .checkbox-row input[type="checkbox"] {
+    width: 17px; height: 17px;
+    accent-color: var(--red);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .checkbox-label {
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--gray-500);
+  }
+
+  .checkbox-label strong { color: var(--gray-800); font-weight: 600; }
+
+  /* SUBMIT */
+  .submit-wrap {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  button[type="submit"] {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--body);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.9rem 2rem;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  button[type="submit"]:hover { background: var(--red-dark); }
+  button[type="submit"]:active { transform: scale(0.99); }
+
+  .submit-note {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .hidden-note {
+    font-size: 0.75rem;
+    color: var(--gray-300);
+    margin-top: 1.25rem;
+    font-style: italic;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    body { grid-template-columns: 1fr; }
+    .panel-left { position: relative; height: auto; padding: 2.5rem 2rem; }
+    .panel-left::before, .panel-left::after { display: none; }
+    .headline h1 { font-size: 3rem; }
+    .panel-right { padding: 2rem 1.5rem 3rem; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ LEFT PANEL ═══ -->
+<div class="panel-left">
+  <div class="brand-mark"></div>
+
+  <div class="headline">
+    <h1>เริ่มต้น<br/>ชีวิต<br/><span>ฟิตเนส</span></h1>
+    <p>บอกเราถึงเป้าหมายของคุณ ทีมผู้เชี่ยวชาญจะติดต่อกลับเพื่อแนะนำโปรแกรมที่เหมาะกับคุณที่สุด</p>
+    <div class="benefits">
+      <div class="benefit"><span class="benefit-icon">✓</span>คลาสทดลองฟรีไม่มีข้อผูกมัด</div>
+      <div class="benefit"><span class="benefit-icon">✓</span>ผู้เชี่ยวชาญดูแลตลอดการเดินทาง</div>
+      <div class="benefit"><span class="benefit-icon">✓</span>อุปกรณ์ระดับโลกทุกสาขา</div>
+    </div>
+  </div>
+
+  <div class="branch-count">63 สาขาทั่วประเทศไทย</div>
+</div>
+
+<!-- ═══ RIGHT PANEL (FORM) ═══ -->
+<div class="panel-right">
+  <div class="form-header">
+    <h2>ลงทะเบียนสนใจ</h2>
+    <p>กรอกข้อมูลเพื่อให้ทีมงานติดต่อกลับโดยเร็วที่สุด</p>
+  </div>
+
+  <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00Dg8000003bZRh" method="POST">
+
+    <!-- Hidden required fields -->
+    <input type="hidden" name="oid" value="00Dg8000003bZRh"/>
+    <input type="hidden" name="retURL" value="https://jettfitness.com/thank-you"/>
+    <input type="hidden" name="lead_source" value="Web Form"/>
+    <!-- B2C only: Company field intentionally left blank so Salesforce
+         routes Lead Convert to Person Account automatically -->
+    <input type="hidden" name="company" value=""/>
+
+    <!-- ── SECTION: ข้อมูลส่วนตัว ── -->
+    <div class="section-label">ข้อมูลส่วนตัว</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="first_name">ชื่อ <span class="req">*</span></label>
+        <input type="text" id="first_name" name="first_name" maxlength="40" placeholder="ชื่อจริง" required/>
+      </div>
+      <div class="field">
+        <label for="last_name">นามสกุล <span class="req">*</span></label>
+        <input type="text" id="last_name" name="last_name" maxlength="80" placeholder="นามสกุล" required/>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="phone">เบอร์โทรศัพท์ <span class="req">*</span></label>
+        <input type="tel" id="phone" name="phone" maxlength="40" placeholder="08X-XXX-XXXX" required/>
+      </div>
+      <div class="field">
+        <label for="email">อีเมล</label>
+        <input type="email" id="email" name="email" maxlength="80" placeholder="example@email.com"/>
+      </div>
+    </div>
+
+    <!-- ── SECTION: โปรไฟล์ฟิตเนส ── -->
+    <div class="section-label">โปรไฟล์ฟิตเนส</div>
+
+    <div class="field-row full">
+      <div class="field">
+        <label for="Fitness_Goal__c">เป้าหมายหลักของคุณ</label>
+        <select id="Fitness_Goal__c" name="Fitness_Goal__c">
+          <option value="">-- เลือกเป้าหมาย --</option>
+          <option value="Weight Loss">ลดน้ำหนัก (Weight Loss)</option>
+          <option value="Muscle Gain">เพิ่มกล้ามเนื้อ (Muscle Gain)</option>
+          <option value="General Health">สุขภาพโดยรวม (General Health)</option>
+          <option value="Athletic Performance">เพิ่มสมรรถภาพกีฬา (Athletic Performance)</option>
+          <option value="Rehab / Recovery">ฟื้นฟูร่างกาย (Rehab / Recovery)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="Membership_Interest__c">ประเภทสมาชิกที่สนใจ</label>
+        <select id="Membership_Interest__c" name="Membership_Interest__c">
+          <option value="">-- เลือกประเภท --</option>
+          <option value="Monthly">รายเดือน (Monthly)</option>
+          <option value="Quarterly">3 เดือน (Quarterly)</option>
+          <option value="Annual">รายปี (Annual)</option>
+          <option value="Family">แพ็กเกจครอบครัว (Family)</option>
+          <option value="Corporate">องค์กร (Corporate)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="Budget_Range__c">งบประมาณต่อเดือน (บาท)</label>
+        <select id="Budget_Range__c" name="Budget_Range__c">
+          <option value="">-- เลือกช่วงงบ --</option>
+          <option value="&lt; 1,500">น้อยกว่า 1,500 บาท</option>
+          <option value="1,500 – 2,500">1,500 – 2,500 บาท</option>
+          <option value="2,500 – 4,000">2,500 – 4,000 บาท</option>
+          <option value="4,000 – 6,000">4,000 – 6,000 บาท</option>
+          <option value="6,000+">6,000 บาทขึ้นไป</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="Decision_Timeline__c">คุณพร้อมเริ่มเมื่อไหร่</label>
+        <select id="Decision_Timeline__c" name="Decision_Timeline__c">
+          <option value="Just Browsing">ยังแค่ดูข้อมูล</option>
+          <option value="This Week">สัปดาห์นี้</option>
+          <option value="This Month">เดือนนี้</option>
+          <option value="1 – 3 Months">1–3 เดือน</option>
+          <option value="3+ Months">มากกว่า 3 เดือน</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="Contact_Preference__c">ช่องทางติดต่อที่ต้องการ</label>
+        <select id="Contact_Preference__c" name="Contact_Preference__c">
+          <option value="">-- เลือกช่องทาง --</option>
+          <option value="Call">โทรศัพท์ (Call)</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="LINE">LINE</option>
+          <option value="Email">อีเมล (Email)</option>
+          <option value="In-Person">พบที่สาขา (In-Person)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── SECTION: สาขาที่สนใจ ── -->
+    <div class="section-label">สาขาที่สนใจ</div>
+
+    <div class="field-row full">
+      <div class="field">
+        <!--
+          NOTE: Preferred_Branch__c is a Lookup field → Branch__c in Salesforce.
+          Web-to-Lead does NOT support Lookup fields directly.
+          Use a Text custom field "Preferred_Branch_Text__c" mapped here,
+          then a Flow matches the Branch_Code value to the Branch__c Lookup.
+          Value = Branch_Code__c (External ID) for exact matching.
+        -->
+        <label for="00N_branch_text">สาขาที่ต้องการ</label>
+        <select id="00N_branch_text" name="00N_branch_text">
+          <option value="">-- เลือกสาขา --</option>
+          <optgroup label="กรุงเทพ — CBD">
+            <option value="BKK-ARI-01">อาคาร เอส พี (อารีย์) · BTS Ari</option>
+            <option value="BKK-ASK-01">อโศก (BTS อโศก) · BTS Asok</option>
+            <option value="BKK-CDL-01">เกษร (ชิดลม) · BTS Chit Lom</option>
+            <option value="BKK-CHL-01">สเตเดียมวัน (จุฬา) · MRT Sam Yan</option>
+            <option value="BKK-CTW-01">แอมไชน่าทาวน์ (MRT วัดมังกร) · MRT Wat Mangkon</option>
+            <option value="BKK-LUM-01">วัน แบงค็อก (MRT ลุมพินี) · MRT Lumphini</option>
+            <option value="BKK-PLC-01">แคนวาส (เพลินจิต) · BTS Phloen Chit</option>
+            <option value="BKK-PYT-01">เดอะ ยูนิคอร์น (BTS พญาไท) · BTS Phaya Thai</option>
+            <option value="BKK-QSN-01">เดอะพาร์ค (MRT QSNCC) · MRT QSNCC</option>
+            <option value="BKK-R4-01">สวนเพลิน มาร์เก็ต (พระราม 4)</option>
+            <option value="BKK-SIM-01">สยามสแควร์วัน (BTS สยาม) · BTS Siam</option>
+            <option value="BKK-SLM-01">พาร์ค สีลม (BTS ศาลาแดง) · BTS Sala Daeng</option>
+            <option value="BKK-SLM-02">สีลม คอนเนค · BTS Chong Nonsi</option>
+            <option value="BKK-VCT-01">วิคตอรี่ ฮับ · BTS Victory Monument</option>
+          </optgroup>
+          <optgroup label="กรุงเทพ — เหนือ">
+            <option value="BKK-BSU-01">เกตเวย์ บางซื่อ · MRT Bang Pho</option>
+            <option value="BKK-CTC-01">เอสเจ อินฟินิท วัน (จตุจักร) · BTS Mo Chit</option>
+            <option value="BKK-DST-01">มาร์เก็ต เพลส (ดุสิต)</option>
+            <option value="BKK-KNW-01">เดอะวอล์ค เกษตรนวมินทร์</option>
+            <option value="BKK-KNW-02">นวมินทร์ ซิตี้ อเวนิว</option>
+            <option value="BKK-RCD-01">เดอะสตรีท (รัชดา) · MRT Huai Khwang</option>
+            <option value="BKK-RIT-01">อมอรินี่ (รามอินทรา)</option>
+            <option value="BKK-SMI-01">สายไหม อเวนิว</option>
+          </optgroup>
+          <optgroup label="กรุงเทพ — ตะวันออก">
+            <option value="BKK-BCK-01">บางจาก (BTS บางจาก) · BTS Bang Chak</option>
+            <option value="BKK-EKM-01">ดองกี้ มอลล์ (เอกมัย) · BTS Ekkamai</option>
+            <option value="BKK-LKB-01">โรบินสัน (ลาดกระบัง)</option>
+            <option value="BKK-ONT-01">เดอะฟิล (อ่อนนุช) · BTS On Nut</option>
+            <option value="BKK-R9-01">ยูนิลีเวอร์ (พระรามเก้า) · MRT Phra Ram 9</option>
+            <option value="BKK-TIT-01">เดอะซีน (ทาวน์อินทาวน์)</option>
+            <option value="SPK-01">เดอะกลาส บางนา</option>
+          </optgroup>
+          <optgroup label="กรุงเทพ — ใต้">
+            <option value="BKK-CRN-01">เสนา เฟสท์ (เจริญนคร)</option>
+            <option value="BKK-R2-01">อินเด็กซ์ ลิฟวิ่ง มอลล์ (พระราม 2)</option>
+            <option value="BKK-R3-01">เอ็มเอส สยาม (พระราม 3)</option>
+          </optgroup>
+          <optgroup label="ภาคกลาง">
+            <option value="AYA-01">เซ็นทรัลอยุธยา</option>
+            <option value="NBI-01">คอสโม บาร์ซาร์ (เมืองทองธานี)</option>
+            <option value="NBI-02">เซ็นทรัล เวสต์วิลล์ (ราชพฤกษ์)</option>
+            <option value="NBI-03">โรบินสัน ไลฟ์สไตล์ (ราชพฤกษ์)</option>
+            <option value="NBI-04">โรบินสัน ไลฟ์สไตล์ ศรีสมาน (ปากเกร็ด)</option>
+            <option value="NBI-05">ลิตเติ้ล วอร์ค รัตนาธิเบศร์ · MRT Yaek Nonthaburi 1</option>
+            <option value="NBI-06">อินเด็กซ์ ลิฟวิ่ง มอลล์ บางใหญ่ · MRT Talat Bang Yai</option>
+            <option value="NBI-07">โฮมโปร (ราชพฤกษ์)</option>
+            <option value="NPT-01">เซ็นทรัล นครปฐม</option>
+            <option value="NPT-02">เดอะ โฟร์ท (พุทธมณฑล สาย 4)</option>
+            <option value="NSN-01">เซ็นทรัล นครสวรรค์</option>
+            <option value="PTE-01">ฟิวเจอร์ซิตี้ รังสิต</option>
+          </optgroup>
+          <optgroup label="ภาคเหนือ">
+            <option value="CNX-01">วันนิมมาน (เชียงใหม่)</option>
+            <option value="CNX-02">อินเด็กซ์ ลิฟวิ่ง มอลล์ (เชียงใหม่)</option>
+          </optgroup>
+          <optgroup label="ภาคตะวันออกเฉียงเหนือ">
+            <option value="NMA-01">เซฟวัน (โคราช)</option>
+            <option value="NMA-02">เทอร์มินอล 21 (โคราช)</option>
+          </optgroup>
+          <optgroup label="ภาคตะวันออก">
+            <option value="CBI-01">เซ็นทรัลศรีราชา</option>
+            <option value="CBI-02">ลิตเติ้ล วอร์ค (พัทยากลาง)</option>
+            <option value="CBI-03">อินเด็กซ์ ลิฟวิ่งมอลล์ ชลบุรี</option>
+            <option value="CTI-01">เซ็นทรัลจันทบุรี</option>
+          </optgroup>
+          <optgroup label="ภาคตะวันตก">
+            <option value="PBI-01">โรบินสัน ไลฟ์สไตล์ (เพชรบุรี)</option>
+            <option value="PKN-01">มาร์เก็ตวิลเลจ (หัวหิน)</option>
+          </optgroup>
+          <optgroup label="ภาคใต้">
+            <option value="HKT-01">เซ็นทรัลภูเก็ต เฟสติวัล</option>
+            <option value="HKT-02">โรบินสัน ฉลอง (ภูเก็ต)</option>
+            <option value="HKT-03">โรบินสัน ถลาง (ภูเก็ต)</option>
+            <option value="KRB-01">เซ็นทรัลกระบี่</option>
+            <option value="SKA-01">หาดใหญ่ วิลเลจ (สงขลา)</option>
+            <option value="SNI-01">เซ็นทรัลสุราษฎร์ธานี</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── SECTION: PDPA ── -->
+    <div class="section-label">ความยินยอม (PDPA)</div>
+
+    <div class="pdpa-block">
+      <div class="checkbox-row">
+        <input type="checkbox" id="pdpa_consent" name="pdpa_consent" value="1" required/>
+        <label class="checkbox-label" for="pdpa_consent">
+          <strong>ฉันยินยอมให้ Jett Fitness เก็บและใช้ข้อมูลส่วนบุคคลเพื่อติดต่อและนำเสนอบริการ</strong>
+          ตามนโยบายความเป็นส่วนตัว
+        </label>
+      </div>
+      <div class="checkbox-row">
+        <!--
+          DoNotCall = unchecked means consent to call.
+          Salesforce maps opt-OUT, so if user does NOT check this box,
+          DoNotCall remains false (consent given).
+        -->
+        <input type="checkbox" id="no_call" name="do_not_call" value="1"/>
+        <label class="checkbox-label" for="no_call">
+          ไม่ต้องการรับการติดต่อทางโทรศัพท์
+          <br/><span style="font-size:0.75rem;opacity:0.5">(หากไม่เลือก ทีมงานจะโทรติดต่อกลับ)</span>
+        </label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="no_email" name="email_opt_out" value="1"/>
+        <label class="checkbox-label" for="no_email">
+          ไม่ต้องการรับอีเมลโปรโมชัน
+        </label>
+      </div>
+    </div>
+
+    <p class="hidden-note">
+      * ข้อมูลนี้จะถูกส่งไปยังระบบ CRM ของ Jett Fitness เพื่อให้ทีมงานติดต่อกลับโดยเร็วที่สุด
+    </p>
+
+    <div class="submit-wrap">
+      <button type="submit">ส่งข้อมูล — รับคำแนะนำฟรี</button>
+      <p class="submit-note">ทีมงานจะติดต่อกลับภายใน 1 ชั่วโมงในวันและเวลาทำการ</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- ═══ EMBEDDED CHAT ═══════════════════════════════════════════════════ -->
+<!--
+  HOW TO USE:
+  1. Go to your Salesforce org → Setup → Embedded Service Deployments
+  2. Create a new deployment (Enhanced Chat) named "Jett_Web_Chat"
+  3. Connect it to your Agentforce Service Agent via Omni-Channel Flow
+  4. Copy the "Snippet Code" from the deployment → replace the snippet below
+  5. Replace YOUR_ORG_ID and YOUR_DEPLOYMENT_ID with your actual values
+
+  FOR DEMO (without Salesforce org):
+  The floating button below is a standalone demo UI only.
+  It simulates what the chat looks like — no real Salesforce backend.
+-->
+
+<style>
+  /* ── Chat Button ── */
+  #chat-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--red);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(208,2,27,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 999;
+  }
+  #chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(208,2,27,0.45); }
+  #chat-btn svg { width: 26px; height: 26px; fill: white; }
+
+  /* ── Chat Window ── */
+  #chat-window {
+    position: fixed;
+    bottom: 96px;
+    right: 28px;
+    width: 360px;
+    height: 520px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 998;
+    font-family: var(--body);
+  }
+  #chat-window.open { display: flex; }
+
+  .chat-header {
+    background: var(--red);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .chat-header-info { display: flex; align-items: center; gap: 10px; }
+  .chat-avatar {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .chat-header h3 { color: white; font-size: 14px; font-weight: 600; margin: 0; }
+  .chat-header p  { color: rgba(255,255,255,0.75); font-size: 11px; margin: 0; }
+  .chat-close {
+    background: none; border: none; color: white;
+    cursor: pointer; font-size: 20px; line-height: 1;
+    opacity: 0.8; padding: 0;
+  }
+  .chat-close:hover { opacity: 1; }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #F9F7F5;
+  }
+
+  .msg {
+    max-width: 80%;
+    padding: 10px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .msg.agent {
+    background: white;
+    color: #2C2825;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .msg.user {
+    background: var(--red);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+  .msg-time {
+    font-size: 10px;
+    color: #9A958E;
+    margin-top: 2px;
+    align-self: flex-start;
+  }
+
+  .typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 13px;
+    background: white;
+    border-radius: 12px;
+    border-bottom-left-radius: 3px;
+    align-self: flex-start;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .dot {
+    width: 6px; height: 6px;
+    background: #9A958E;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: translateY(0); }
+    40%          { transform: translateY(-5px); }
+  }
+
+  .chat-input-area {
+    padding: 12px;
+    background: white;
+    border-top: 1px solid #E8E3DC;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .chat-input-area input {
+    flex: 1;
+    border: 1.5px solid #E8E3DC;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: var(--body);
+    font-size: 13px;
+    outline: none;
+    color: #2C2825;
+    background: #F9F7F5;
+  }
+  .chat-input-area input:focus { border-color: var(--red); background: white; }
+  .chat-send {
+    width: 38px; height: 38px;
+    background: var(--red);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .chat-send:hover { background: var(--red-dark); }
+  .chat-send svg { width: 16px; height: 16px; fill: white; }
+
+  .chat-powered {
+    text-align: center;
+    font-size: 10px;
+    color: #9A958E;
+    padding: 6px;
+    background: white;
+    border-top: 1px solid #E8E3DC;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    #chat-window { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
+    #chat-btn { right: 16px; bottom: 20px; }
+  }
+</style>
+
+<!-- Floating Chat Button -->
+<button id="chat-btn" onclick="toggleChat()" aria-label="เปิด Chat">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+  </svg>
+</button>
+
+<!-- Chat Window -->
+<div id="chat-window" role="dialog" aria-label="Jett Fitness Chat">
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="chat-avatar">🤖</div>
+      <div>
+        <h3>Jett Fitness Assistant</h3>
+        <p>Agentforce · ออนไลน์ตลอด 24 ชม.</p>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()" aria-label="ปิด">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg agent">สวัสดีครับ! ยินดีต้อนรับสู่ Jett Fitness 💪<br/>วันนี้สามารถช่วยอะไรได้บ้างครับ?</div>
+    <div class="msg-time">Agentforce · เมื่อกี้</div>
+    <div class="msg agent">ตัวอย่างคำถามที่ถามได้:<br/>• ราคาสมาชิกเท่าไหร่?<br/>• สาขาอยู่ที่ไหนบ้าง?<br/>• ขอ freeze สมาชิกได้ไหม?</div>
+  </div>
+
+  <div class="chat-input-area">
+    <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ..." onkeydown="if(event.key==='Enter') sendMsg()"/>
+    <button class="chat-send" onclick="sendMsg()" aria-label="ส่ง">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+  <div class="chat-powered">⚡ Powered by Salesforce Agentforce</div>
+</div>
+
+<script>
+  function toggleChat() {
+    const win = document.getElementById('chat-window');
+    win.classList.toggle('open');
+    if (win.classList.contains('open')) {
+      setTimeout(() => document.getElementById('chat-input').focus(), 100);
+    }
+  }
+
+  // Demo replies (replace with real Salesforce Embedded Chat snippet for production)
+  const demoReplies = {
+    'ราคา':   'แพ็กเกจเริ่มต้นที่ 1,500 บาท/เดือน ครับ มีให้เลือกตั้งแต่รายเดือน รายไตรมาส ถึงรายปี สนใจให้ทีมงานติดต่อกลับได้เลยครับ 😊',
+    'สาขา':   'Jett Fitness มี 60 สาขาทั่วไทยครับ ทั้งกรุงเทพและต่างจังหวัด ต้องการสาขาใกล้ที่ไหนครับ?',
+    'freeze':  'สามารถ freeze สมาชิกได้สูงสุด 90 วัน/ปีครับ ติดต่อสาขาของคุณได้เลย หรือให้เจ้าหน้าที่ช่วยดำเนินการผ่าน Chat นี้ครับ',
+    'trial':   'ยินดีมากครับ! ทดลองฟรี 1 ครั้ง ไม่มีข้อผูกมัด สะดวกมาสาขาไหนครับ?',
+    'ทดลอง':  'ยินดีมากครับ! ทดลองฟรี 1 ครั้ง ไม่มีข้อผูกมัด สะดวกมาสาขาไหนครับ?',
+    'cancel':  'รับเรื่องครับ ขอโอนสายให้เจ้าหน้าที่ดูแลแทนเพื่อดำเนินการให้ถูกต้องนะครับ 🙏',
+    'ยกเลิก': 'รับเรื่องครับ ขอโอนสายให้เจ้าหน้าที่ดูแลแทนเพื่อดำเนินการให้ถูกต้องนะครับ 🙏',
+    'เปิด':   'เปิดให้บริการทุกวัน 06:00–22:00 น. ครับ บางสาขาอาจแตกต่างกัน ต้องการตรวจสอบสาขาไหนครับ?',
+    'เวลา':   'เปิดให้บริการทุกวัน 06:00–22:00 น. ครับ บางสาขาอาจแตกต่างกัน ต้องการตรวจสอบสาขาไหนครับ?',
+  };
+
+  function sendMsg() {
+    const input = document.getElementById('chat-input');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    addMsg(text, 'user');
+    input.value = '';
+
+    // Show typing indicator
+    const typing = addTyping();
+
+    // Simulate agent reply
+    setTimeout(() => {
+      typing.remove();
+      const reply = getReply(text);
+      addMsg(reply, 'agent');
+    }, 800 + Math.random() * 600);
+  }
+
+  function addMsg(text, type) {
+    const msgs = document.getElementById('chat-messages');
+    const div  = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function addTyping() {
+    const msgs  = document.getElementById('chat-messages');
+    const div   = document.createElement('div');
+    div.className = 'typing';
+    div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function getReply(text) {
+    const lower = text.toLowerCase();
+    for (const [key, reply] of Object.entries(demoReplies)) {
+      if (lower.includes(key)) return reply;
+    }
+    return 'ขอบคุณสำหรับคำถามครับ กำลังค้นหาข้อมูลให้... ถ้าต้องการความช่วยเหลือด่วน สามารถโทรหาสาขาใกล้บ้านได้เลยครับ 📞';
+  }
+
+  /*
+  ─────────────────────────────────────────────────────────────────────────
+  TO REPLACE WITH REAL SALESFORCE AGENTFORCE WEB CHAT:
+  
+  1. Delete everything above between the EMBEDDED CHAT comment and </script>
+  2. Paste the Embedded Service snippet from:
+     Salesforce Setup → Embedded Service Deployments → [Your Deployment] → Snippet Code
+  
+  The snippet looks like:
+  <script>
+    var initESW = function(gslbBaseURL) {
+      embedded_svc.settings.displayHelpButton = true;
+      embedded_svc.settings.language = 'th';
+      embedded_svc.settings.defaultMinimizedText = 'คุยกับเรา';
+      ...
+      embedded_svc.init(
+        'https://YOUR_ORG.salesforce.com',
+        'https://YOUR_ORG.my.site.com',
+        gslbBaseURL,
+        'YOUR_ORG_ID',
+        'Jett_Web_Chat',
+        { baseLiveAgentContentURL: '...', deploymentId: '...', ... }
+      );
+    };
+  </scr​ipt>
+  ─────────────────────────────────────────────────────────────────────────
+  */
+</script>
+
+</body>
+</html>
