@@ -368,7 +368,7 @@
 
     <!-- Hidden required fields -->
     <input type="hidden" name="oid" value="00Dg8000003bZRh"/>
-    <input type="hidden" name="retURL" value="https://jettfitness.com/thank-you"/>
+    <input type="hidden" name="retURL" value="thank_you.html"/>
     <input type="hidden" name="lead_source" value="Web Form"/>
     <!-- B2C only: Company field intentionally left blank so Salesforce
          routes Lead Convert to Person Account automatically -->
@@ -607,328 +607,27 @@
   </form>
 </div>
 
-<!-- ═══ EMBEDDED CHAT ═══════════════════════════════════════════════════ -->
-<!--
-  HOW TO USE:
-  1. Go to your Salesforce org → Setup → Embedded Service Deployments
-  2. Create a new deployment (Enhanced Chat) named "Jett_Web_Chat"
-  3. Connect it to your Agentforce Service Agent via Omni-Channel Flow
-  4. Copy the "Snippet Code" from the deployment → replace the snippet below
-  5. Replace YOUR_ORG_ID and YOUR_DEPLOYMENT_ID with your actual values
-
-  FOR DEMO (without Salesforce org):
-  The floating button below is a standalone demo UI only.
-  It simulates what the chat looks like — no real Salesforce backend.
--->
-
-<style>
-  /* ── Chat Button ── */
-  #chat-btn {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--red);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 16px rgba(208,2,27,0.35);
-    transition: transform 0.2s, box-shadow 0.2s;
-    z-index: 999;
-  }
-  #chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(208,2,27,0.45); }
-  #chat-btn svg { width: 26px; height: 26px; fill: white; }
-
-  /* ── Chat Window ── */
-  #chat-window {
-    position: fixed;
-    bottom: 96px;
-    right: 28px;
-    width: 360px;
-    height: 520px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 998;
-    font-family: var(--body);
-  }
-  #chat-window.open { display: flex; }
-
-  .chat-header {
-    background: var(--red);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .chat-header-info { display: flex; align-items: center; gap: 10px; }
-  .chat-avatar {
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  .chat-header h3 { color: white; font-size: 14px; font-weight: 600; margin: 0; }
-  .chat-header p  { color: rgba(255,255,255,0.75); font-size: 11px; margin: 0; }
-  .chat-close {
-    background: none; border: none; color: white;
-    cursor: pointer; font-size: 20px; line-height: 1;
-    opacity: 0.8; padding: 0;
-  }
-  .chat-close:hover { opacity: 1; }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #F9F7F5;
-  }
-
-  .msg {
-    max-width: 80%;
-    padding: 10px 13px;
-    border-radius: 12px;
-    font-size: 13px;
-    line-height: 1.55;
-  }
-  .msg.agent {
-    background: white;
-    color: #2C2825;
-    align-self: flex-start;
-    border-bottom-left-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
-  .msg.user {
-    background: var(--red);
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 3px;
-  }
-  .msg-time {
-    font-size: 10px;
-    color: #9A958E;
-    margin-top: 2px;
-    align-self: flex-start;
-  }
-
-  .typing {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 13px;
-    background: white;
-    border-radius: 12px;
-    border-bottom-left-radius: 3px;
-    align-self: flex-start;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
-  .dot {
-    width: 6px; height: 6px;
-    background: #9A958E;
-    border-radius: 50%;
-    animation: bounce 1.2s infinite ease-in-out;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%,80%,100% { transform: translateY(0); }
-    40%          { transform: translateY(-5px); }
-  }
-
-  .chat-input-area {
-    padding: 12px;
-    background: white;
-    border-top: 1px solid #E8E3DC;
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .chat-input-area input {
-    flex: 1;
-    border: 1.5px solid #E8E3DC;
-    border-radius: 8px;
-    padding: 9px 12px;
-    font-family: var(--body);
-    font-size: 13px;
-    outline: none;
-    color: #2C2825;
-    background: #F9F7F5;
-  }
-  .chat-input-area input:focus { border-color: var(--red); background: white; }
-  .chat-send {
-    width: 38px; height: 38px;
-    background: var(--red);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s;
-  }
-  .chat-send:hover { background: var(--red-dark); }
-  .chat-send svg { width: 16px; height: 16px; fill: white; }
-
-  .chat-powered {
-    text-align: center;
-    font-size: 10px;
-    color: #9A958E;
-    padding: 6px;
-    background: white;
-    border-top: 1px solid #E8E3DC;
-    flex-shrink: 0;
-  }
-
-  @media (max-width: 480px) {
-    #chat-window { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
-    #chat-btn { right: 16px; bottom: 20px; }
-  }
-</style>
-
-<!-- Floating Chat Button -->
-<button id="chat-btn" onclick="toggleChat()" aria-label="เปิด Chat">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-  </svg>
-</button>
-
-<!-- Chat Window -->
-<div id="chat-window" role="dialog" aria-label="Jett Fitness Chat">
-  <div class="chat-header">
-    <div class="chat-header-info">
-      <div class="chat-avatar">🤖</div>
-      <div>
-        <h3>Jett Fitness Assistant</h3>
-        <p>Agentforce · ออนไลน์ตลอด 24 ชม.</p>
-      </div>
-    </div>
-    <button class="chat-close" onclick="toggleChat()" aria-label="ปิด">✕</button>
-  </div>
-
-  <div class="chat-messages" id="chat-messages">
-    <div class="msg agent">สวัสดีครับ! ยินดีต้อนรับสู่ Jett Fitness 💪<br/>วันนี้สามารถช่วยอะไรได้บ้างครับ?</div>
-    <div class="msg-time">Agentforce · เมื่อกี้</div>
-    <div class="msg agent">ตัวอย่างคำถามที่ถามได้:<br/>• ราคาสมาชิกเท่าไหร่?<br/>• สาขาอยู่ที่ไหนบ้าง?<br/>• ขอ freeze สมาชิกได้ไหม?</div>
-  </div>
-
-  <div class="chat-input-area">
-    <input type="text" id="chat-input" placeholder="พิมพ์ข้อความ..." onkeydown="if(event.key==='Enter') sendMsg()"/>
-    <button class="chat-send" onclick="sendMsg()" aria-label="ส่ง">
-      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-    </button>
-  </div>
-  <div class="chat-powered">⚡ Powered by Salesforce Agentforce</div>
-</div>
-
-<script>
-  function toggleChat() {
-    const win = document.getElementById('chat-window');
-    win.classList.toggle('open');
-    if (win.classList.contains('open')) {
-      setTimeout(() => document.getElementById('chat-input').focus(), 100);
-    }
-  }
-
-  // Demo replies (replace with real Salesforce Embedded Chat snippet for production)
-  const demoReplies = {
-    'ราคา':   'แพ็กเกจเริ่มต้นที่ 1,500 บาท/เดือน ครับ มีให้เลือกตั้งแต่รายเดือน รายไตรมาส ถึงรายปี สนใจให้ทีมงานติดต่อกลับได้เลยครับ 😊',
-    'สาขา':   'Jett Fitness มี 60 สาขาทั่วไทยครับ ทั้งกรุงเทพและต่างจังหวัด ต้องการสาขาใกล้ที่ไหนครับ?',
-    'freeze':  'สามารถ freeze สมาชิกได้สูงสุด 90 วัน/ปีครับ ติดต่อสาขาของคุณได้เลย หรือให้เจ้าหน้าที่ช่วยดำเนินการผ่าน Chat นี้ครับ',
-    'trial':   'ยินดีมากครับ! ทดลองฟรี 1 ครั้ง ไม่มีข้อผูกมัด สะดวกมาสาขาไหนครับ?',
-    'ทดลอง':  'ยินดีมากครับ! ทดลองฟรี 1 ครั้ง ไม่มีข้อผูกมัด สะดวกมาสาขาไหนครับ?',
-    'cancel':  'รับเรื่องครับ ขอโอนสายให้เจ้าหน้าที่ดูแลแทนเพื่อดำเนินการให้ถูกต้องนะครับ 🙏',
-    'ยกเลิก': 'รับเรื่องครับ ขอโอนสายให้เจ้าหน้าที่ดูแลแทนเพื่อดำเนินการให้ถูกต้องนะครับ 🙏',
-    'เปิด':   'เปิดให้บริการทุกวัน 06:00–22:00 น. ครับ บางสาขาอาจแตกต่างกัน ต้องการตรวจสอบสาขาไหนครับ?',
-    'เวลา':   'เปิดให้บริการทุกวัน 06:00–22:00 น. ครับ บางสาขาอาจแตกต่างกัน ต้องการตรวจสอบสาขาไหนครับ?',
-  };
-
-  function sendMsg() {
-    const input = document.getElementById('chat-input');
-    const text  = input.value.trim();
-    if (!text) return;
-
-    addMsg(text, 'user');
-    input.value = '';
-
-    // Show typing indicator
-    const typing = addTyping();
-
-    // Simulate agent reply
-    setTimeout(() => {
-      typing.remove();
-      const reply = getReply(text);
-      addMsg(reply, 'agent');
-    }, 800 + Math.random() * 600);
-  }
-
-  function addMsg(text, type) {
-    const msgs = document.getElementById('chat-messages');
-    const div  = document.createElement('div');
-    div.className = `msg ${type}`;
-    div.textContent = text;
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-    return div;
-  }
-
-  function addTyping() {
-    const msgs  = document.getElementById('chat-messages');
-    const div   = document.createElement('div');
-    div.className = 'typing';
-    div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-    return div;
-  }
-
-  function getReply(text) {
-    const lower = text.toLowerCase();
-    for (const [key, reply] of Object.entries(demoReplies)) {
-      if (lower.includes(key)) return reply;
-    }
-    return 'ขอบคุณสำหรับคำถามครับ กำลังค้นหาข้อมูลให้... ถ้าต้องการความช่วยเหลือด่วน สามารถโทรหาสาขาใกล้บ้านได้เลยครับ 📞';
-  }
-
-  /*
-  ─────────────────────────────────────────────────────────────────────────
-  TO REPLACE WITH REAL SALESFORCE AGENTFORCE WEB CHAT:
-  
-  1. Delete everything above between the EMBEDDED CHAT comment and </script>
-  2. Paste the Embedded Service snippet from:
-     Salesforce Setup → Embedded Service Deployments → [Your Deployment] → Snippet Code
-  
-  The snippet looks like:
-  <script>
-    var initESW = function(gslbBaseURL) {
-      embedded_svc.settings.displayHelpButton = true;
-      embedded_svc.settings.language = 'th';
-      embedded_svc.settings.defaultMinimizedText = 'คุยกับเรา';
-      ...
-      embedded_svc.init(
-        'https://YOUR_ORG.salesforce.com',
-        'https://YOUR_ORG.my.site.com',
-        gslbBaseURL,
-        'YOUR_ORG_ID',
-        'Jett_Web_Chat',
-        { baseLiveAgentContentURL: '...', deploymentId: '...', ... }
+<!-- ═══ SALESFORCE EMBEDDED CHAT ════════════════════════════════════════ -->
+<script type='text/javascript'>
+  function initEmbeddedMessaging() {
+    try {
+      embeddedservice_bootstrap.settings.language = 'th';
+      embeddedservice_bootstrap.init(
+        '00Dg8000003bZRh',
+        'Web_Chat',
+        'https://po1775788642124.my.site.com/ESWWebChat1777358131520',
+        {
+          scrt2URL: 'https://po1775788642124.my.salesforce-scrt.com'
+        }
       );
-    };
-  </scr​ipt>
-  ─────────────────────────────────────────────────────────────────────────
-  */
+    } catch (err) {
+      console.error('Error loading Embedded Messaging: ', err);
+    }
+  };
+</script>
+<script type='text/javascript'
+  src='https://po1775788642124.my.site.com/ESWWebChat1777358131520/assets/js/bootstrap.min.js'
+  onload='initEmbeddedMessaging()'>
 </script>
 
 </body>
