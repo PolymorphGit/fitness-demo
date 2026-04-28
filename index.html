@@ -576,19 +576,18 @@
         </label>
       </div>
       <div class="checkbox-row">
-        <!--
-          DoNotCall = unchecked means consent to call.
-          Salesforce maps opt-OUT, so if user does NOT check this box,
-          DoNotCall remains false (consent given).
-        -->
-        <input type="checkbox" id="no_call" name="doNotCall" value="1"/>
+        <input type="hidden" name="doNotCall" value="0"/>
+        <input type="checkbox" id="no_call"
+               onchange="this.previousElementSibling.value = this.checked ? 1 : 0"/>
         <label class="checkbox-label" for="no_call">
           ไม่ต้องการรับการติดต่อทางโทรศัพท์
           <br/><span style="font-size:0.75rem;opacity:0.5">(หากไม่เลือก ทีมงานจะโทรติดต่อกลับ)</span>
         </label>
       </div>
       <div class="checkbox-row">
-        <input type="checkbox" id="no_email" name="emailOptOut" value="1"/>
+        <input type="hidden" name="emailOptOut" value="0"/>
+        <input type="checkbox" id="no_email"
+               onchange="this.previousElementSibling.value = this.checked ? 1 : 0"/>
         <label class="checkbox-label" for="no_email">
           ไม่ต้องการรับอีเมลโปรโมชัน
         </label>
