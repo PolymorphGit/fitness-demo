@@ -606,27 +606,18 @@
   </form>
 </div>
 
-<!-- ═══ SALESFORCE EMBEDDED CHAT ════════════════════════════════════════ -->
-<script type='text/javascript'>
-  function initEmbeddedMessaging() {
-    try {
-      embeddedservice_bootstrap.settings.language = 'th';
-      embeddedservice_bootstrap.init(
-        '00Dg8000003bZRh',
-        'Web_Chat',
-        'https://po1775788642124.my.site.com/ESWWebChat1777358131520',
-        {
-          scrt2URL: 'https://po1775788642124.my.salesforce-scrt.com'
-        }
-      );
-    } catch (err) {
-      console.error('Error loading Embedded Messaging: ', err);
-    }
-  };
-</script>
+<!-- ═══ SALESFORCE AGENTFORCE MESSAGING ══════════════════════════════════ -->
 <script type='text/javascript'
-  src='https://po1775788642124.my.site.com/ESWWebChat1777358131520/assets/js/bootstrap.min.js'
-  onload='initEmbeddedMessaging()'>
+  id='init-agentforce-messaging'
+  src='https://service.force.com/embeddedservice/agentforcemessaging/0.3/init.js'
+  onload='agentforce_messaging.init({
+    siteUrl: "https://po1775788642124.my.site.com/ESWWebChat1777358131520",
+    agentApiConfiguration: {
+      agentId: "0Xxg8000000PZ5pCAG",
+      domainUrl: "https://po1775788642124.my.salesforce.com"
+    },
+    uiConfiguration: {}
+  });'>
 </script>
 
 </body>
