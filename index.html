@@ -607,18 +607,25 @@
 </div>
 
 <!-- ═══ SALESFORCE AGENTFORCE MESSAGING ══════════════════════════════════ -->
-<script type='text/javascript' 
-             id='init-agentforce-messaging' 
-             src='https://test-service.force.com/embeddedservice/agentforcemessaging/0.3/init.js' 
-             onload='agentforce_messaging.init({
-                    siteUrl: "https://po1775788642124.my.site.com/AFMFitnessAgentForceCh1777450697632",
-                    agentApiConfiguration: {
-                        agentId: "0Xxg8000000PZ5pCAG", 
-                        domainUrl: "https://po1775788642124.my.salesforce.com"
-                    },
-                    uiConfiguration: {}
-            });'>
+<script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'th_TH'; // For example, enter 'en' or 'en-US'
+
+			embeddedservice_bootstrap.init(
+				'00Dg8000003bZRh',
+				'Web_Chat',
+				'https://po1775788642124.my.site.com/ESWWebChat1777358131520',
+				{
+					scrt2URL: 'https://po1775788642124.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
 </script>
+<script type='text/javascript' src='https://po1775788642124.my.site.com/ESWWebChat1777358131520/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
